@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func chanDemo() {
@@ -15,7 +16,11 @@ func chanDemo() {
 		channels[i] <- 'a' + i
 	}
 
-	//time.Sleep(time.Millisecond)
+	for i := 0; i < 10; i++ {
+		channels[i] <- 'A' + i
+	}
+
+	time.Sleep(time.Millisecond)
 }
 
 func worker(id int, c chan int) {
