@@ -30,8 +30,12 @@ func createWorker(id int) chan<- int {
 }
 
 func worker(id int, c chan int) {
-	for {
-		fmt.Printf("Worker %d received %c\n", id, <-c)
+	for n := range c {
+		/*n, ok := <-c
+		if !ok {
+			break
+		}*/
+		fmt.Printf("Worker %d received %c\n", id, n)
 	}
 }
 
@@ -43,11 +47,30 @@ func bufferedChannel() {
 	c <- 'b'
 	c <- 'c'
 	c <- 'd'
+	c <- 'e'
 
 	time.Sleep(time.Millisecond)
 }
 
+func channelClose() {
+	c := make(chan int)
+
+	go worker(0, c)
+	c <- 'a'
+	c <- 'b'
+	c <- 'c'
+	c <- 'd'
+	c <- 'e'
+
+	close(c)
+	time.Sleep(time.Millisecond)
+}
+
 func main() {
-	//chanDemo()
+	fmt.Println("Channel as first-class citizen")
+	chanDemo()
+	fmt.Println("Buffered channel")
 	bufferedChannel()
+	fmt.Println("Channel close and range")
+	channelClose()
 }
