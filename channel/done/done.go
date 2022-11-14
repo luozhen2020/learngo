@@ -12,15 +12,21 @@ func chanDemo() {
 
 	for i := 0; i < 10; i++ {
 		workers[i].in <- 'a' + i
-		<-workers[i].done
+		/*<-workers[i].done*/
 	}
 
 	for i := 0; i < 10; i++ {
 		workers[i].in <- 'A' + i
-		<-workers[i].done
+		/*<-workers[i].done*/
 	}
 
 	/*time.Sleep(time.Millisecond)*/
+
+	// wait for all of them
+	for _, worker := range workers {
+		<-worker.done
+		<-worker.done
+	}
 }
 
 func createWorker(id int) worker {
@@ -45,7 +51,10 @@ func doWork(id int, w worker) {
 			break
 		}*/
 		fmt.Printf("Worker %d received %c\n", id, n)
-		w.done <- true
+		go func() {
+			w.done <- true
+		}()
+
 	}
 }
 
