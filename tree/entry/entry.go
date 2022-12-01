@@ -65,4 +65,13 @@ func main() {
 		nodeCount++
 	})
 	fmt.Println("Node count:", nodeCount)
+
+	c := root.TraversalFuncWithChannel()
+	maxNode := 0
+	for node := range c {
+		if node.Value > maxNode {
+			maxNode = node.Value
+		}
+	}
+	fmt.Println("Max node value: ", maxNode)
 }
