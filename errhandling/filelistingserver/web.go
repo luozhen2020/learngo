@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
+
 	"xyy/learngo/errhandling/filelistingserver/filelisting"
 )
 
