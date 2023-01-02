@@ -39,7 +39,7 @@ func (p point) add(r point) point {
 }
 
 func (p point) at(grid [][]int) (int, bool) {
-	if p.i < 0 || p.j >= len(grid) {
+	if p.i < 0 || p.i >= len(grid) {
 		return 0, false
 	}
 
@@ -50,7 +50,7 @@ func (p point) at(grid [][]int) (int, bool) {
 	return grid[p.i][p.j], true
 }
 
-func walk(maze [][]int, start, end point) {
+func walk(maze [][]int, start, end point) [][]int {
 	steps := make([][]int, len(maze))
 
 	for i := range steps {
@@ -62,6 +62,10 @@ func walk(maze [][]int, start, end point) {
 	for len(Q) > 0 {
 		cur := Q[0]
 		Q = Q[1:]
+
+		if cur == end {
+			break
+		}
 
 		for _, dir := range dirs {
 			next := cur.add(dir)
@@ -84,19 +88,32 @@ func walk(maze [][]int, start, end point) {
 			if next == start {
 				continue
 			}
+
+			curSteps, _ := cur.at(steps)
+			steps[next.i][next.j] = curSteps + 1
+			Q = append(Q, next)
 		}
 	}
+
+	return steps
 }
 
 func main() {
 	maze := readMaze("maze/maze.in")
 
-	for _, row := range maze {
+	/*for _, row := range maze {
 		for _, val := range row {
 			fmt.Printf("%d ", val)
 		}
 		fmt.Println()
-	}
+	}*/
 
-	walk(maze, point{0, 0}, point{len(maze) - 1, len(maze[0]) - 1})
+	steps := walk(maze, point{0, 0}, point{len(maze) - 1, len(maze[0]) - 1})
+
+	for _, row := range steps {
+		for _, val := range row {
+			fmt.Printf("%3d", val)
+		}
+		fmt.Println()
+	}
 }
