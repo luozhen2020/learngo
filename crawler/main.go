@@ -22,7 +22,7 @@ func main() {
 		fmt.Println("Error: status code", resp.StatusCode)
 		return
 	}
-
+	fmt.Println("xyy!")
 	e := determineEncoding(resp.Body)
 
 	utf8Reader := transform.NewReader(resp.Body, e.NewDecoder())
