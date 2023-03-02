@@ -2,11 +2,21 @@ package main
 
 import (
 	"xyy/learngo/crawler/engine"
+	"xyy/learngo/crawler/scheduler"
 	"xyy/learngo/crawler/zhenai/parser"
 )
 
 func main() {
-	engine.Run(engine.Request{
+	/*engine.SimpleEngine{}.Run(engine.Request{
+		Url:        `https://www.zhenai.com/zhenghun`,
+		ParserFunc: parser.ParseCityList,
+	})*/
+
+	e := engine.ConcurrentEngine{
+		Scheduler:   &scheduler.SimpleScheduler{},
+		WorkerCount: 10,
+	}
+	e.Run(engine.Request{
 		Url:        `https://www.zhenai.com/zhenghun`,
 		ParserFunc: parser.ParseCityList,
 	})
