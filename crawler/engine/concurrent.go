@@ -14,7 +14,7 @@ type Scheduler interface {
 	ConfigureMasterWorkerChan(chan Request)
 }
 
-func (e *ConcurrentEngine) Run(sedds ...Request) {
+func (e *ConcurrentEngine) Run(seeds ...Request) {
 	in := make(chan Request)
 	out := make(chan ParseResult)
 	e.Scheduler.ConfigureMasterWorkerChan(in)
@@ -23,7 +23,7 @@ func (e *ConcurrentEngine) Run(sedds ...Request) {
 		createWorker(in, out)
 	}
 
-	for _, r := range sedds {
+	for _, r := range seeds {
 		e.Scheduler.Submit(r)
 	}
 
