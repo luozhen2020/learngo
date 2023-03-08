@@ -3,5 +3,5 @@ package main
 import "xyy/learngo/test/channel"
 
 func main() {
-	channel.Sample7()
+	channel.Sample10()
 }

@@ -147,3 +147,71 @@ func Sample8() {
 
 	select {}
 }
+
+// Sample9 - 借助通道，使两个协程交替输出大小写字母
+func Sample9() {
+	arr1 := []string{"a", "b", "c", "d", "e"}
+	arr2 := []string{"A", "B", "C", "D", "E"}
+	a := make(chan bool)
+	b := make(chan bool)
+
+	go func() {
+		for _, str := range arr1 {
+			if <-a {
+				fmt.Printf(str + " ")
+				b <- true
+			}
+		}
+	}()
+
+	go func() {
+		for _, str := range arr2 {
+			if <-b {
+				fmt.Printf(str + " ")
+				a <- true
+			}
+		}
+	}()
+
+	b <- true
+
+	time.Sleep(2 * time.Second)
+}
+
+// Sample10 - 爬取指定的网站
+func Sample10() {
+	// urls是要爬取的地址，limit为并发goroutine限制
+	const limit = 1
+	urls := []string{"https://www.lixiang.com/", "https://www.sohu.com", "https://www.baidu.com/", "https://www.360.com/"}
+	limiter := make(chan bool, limit) // 限速协程
+	exit := make(chan bool)           // 退出协程
+	for i, value := range urls {
+		limiter <- true
+		if i == len(urls)-1 {
+			go saveFile(value, limiter, exit)
+		} else {
+			go saveFile(value, limiter, nil)
+		}
+	}
+	<-exit
+}
+
+// 抓取网页内容
+func crawl(url string) (result string) {
+	time.Sleep(1 * time.Second) // 睡眠1s钟模拟抓取完数据
+	return url + ":抓取内容完成 \n"
+}
+
+// 保存文件内容到本地
+func saveFile(url string, limiter chan bool, exit chan bool) {
+	fmt.Printf("开启一个抓取协程 \n")
+
+	result := crawl(url) // 抓取网页内容
+	if result != "" {
+		fmt.Printf(result)
+	}
+	<-limiter // 通知限速协程，抓取完成
+	if exit != nil {
+		exit <- true // 通知退出协程，程序执行完成
+	}
+}
