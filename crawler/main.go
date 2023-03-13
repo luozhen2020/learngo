@@ -2,6 +2,7 @@ package main
 
 import (
 	"xyy/learngo/crawler/engine"
+	"xyy/learngo/crawler/persist"
 	"xyy/learngo/crawler/scheduler"
 	"xyy/learngo/crawler/zhenai/parser"
 )
@@ -15,10 +16,15 @@ func main() {
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 100,
+		ItemChan:    persist.ItemSaver(),
 	}
-	e.Run(engine.Request{
+	/*e.Run(engine.Request{
 		Url:        `https://www.zhenai.com/zhenghun`,
 		ParserFunc: parser.ParseCityList,
+	})*/
+	e.Run(engine.Request{
+		Url:        `https://www.zhenai.com/zhenghun/shanghai`,
+		ParserFunc: parser.ParseCity,
 	})
 }
 
